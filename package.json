@@ -1,0 +1,36 @@
+{
+  "name": "vue-three-template",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "animejs": "^3.0.1",
+    "axios": "^0.18.0",
+    "dat.gui": "^0.7.5",
+    "glslify-loader": "^2.0.0",
+    "raw-loader": "^1.0.0",
+    "three": "^0.100.0",
+    "ua-parser-js": "0.7.19",
+    "vue": "^2.6.6",
+    "vue-bus": "^1.2.0",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.4",
+    "@vue/cli-plugin-eslint": "^3.0.4",
+    "@vue/cli-service": "^3.0.4",
+    "@vue/eslint-config-airbnb": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.5.21",
+    "webpack": "^4.29.6"
+  }
+}
