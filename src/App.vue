@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <scene/>
+    <scene id="scene"/>
     <router-view/>
   </div>
 </template>
@@ -14,3 +14,19 @@ export default {
   },
 };
 </script>
+
+
+<style lang="scss" scoped>
+#scene {
+  position: absolute;
+  top:0px;
+  left: 0px;
+  z-index: -1;
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+</style>

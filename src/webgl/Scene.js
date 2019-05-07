@@ -1,14 +1,15 @@
 /* eslint-disable prefer-const */
 import {
-  OBJLoader
+  OBJLoader,
 } from './loaders';
 import {
-  OrbitControls
+  OrbitControls,
 } from './controls';
 import RendererComposer from './postprocessing';
 
 class Scene {
   constructor(canvas) {
+    window.addEventListener('resize',this.onWindowResize.bind(this))
     this.canvas = canvas;
     this.scene = new THREE.Scene();
     const ratio = window.innerWidth / window.innerHeight;
@@ -20,7 +21,9 @@ class Scene {
     });
     this.objLoader = new OBJLoader();
     this.orbitControl = new OrbitControls(this.camera);
+    this.orbitControl.enabled = false;
     this.orbitControl.autoRotate = true;
+    this.orbitControl.autoRotateSpeed = 1;
 
     this.initLight();
     this.initClock();
@@ -61,6 +64,13 @@ class Scene {
     requestAnimationFrame(this.loop.bind(this));
     this.renderer.render();
   }
+
+  onWindowResize() {
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
+
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
 }
 
 class Particles extends THREE.Object3D {
@@ -73,39 +83,39 @@ class Particles extends THREE.Object3D {
   init() {
     this.geometry = new THREE.PlaneBufferGeometry(1, 1, this.side, this.side);
     this.geometry.addAttribute(
-      "origin",
+      'origin',
       new THREE.BufferAttribute(
         getPlane((this.side + 1) * (this.side + 1), 1),
-        3
-      )
+        3,
+      ),
     );
 
 
     this.uniforms = {
       time: {
-        type: "f",
-        value: 0.0
+        type: 'f',
+        value: 0.0,
       },
       pointSize: {
-        type: "f",
-        value: 2
+        type: 'f',
+        value: 2,
       },
       big: {
-        type: "v3",
-        value: new THREE.Vector3(207, 221, 212).multiplyScalar(1 / 0xff)
+        type: 'v3',
+        value: new THREE.Vector3(207, 221, 212).multiplyScalar(1 / 0xff),
       },
       small: {
-        type: "v3",
-        value: new THREE.Vector3(213, 239, 229).multiplyScalar(1 / 0xff)
-      }
+        type: 'v3',
+        value: new THREE.Vector3(213, 239, 229).multiplyScalar(1 / 0xff),
+      },
     };
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       transparent: true,
       blending: THREE.AdditiveBlending,
       vertexShader: `
-        //	Simplex 3D Noise
-        //	by Ian McEwan, Ashima Arts
+        //Simplex 3D Noise
+        //by Ian McEwan, Ashima Arts
         //
         vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
         vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
@@ -209,7 +219,7 @@ class Particles extends THREE.Object3D {
              gl_FragColor = vec4( big * vec3( 1. - length( gl_PointCoord.xy-vec2(.5) ) ) * 1.5, .95 );
           }
         }
-      `
+      `,
     });
     this.particles = new THREE.Points(this.geometry, this.material);
 

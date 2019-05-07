@@ -12,6 +12,7 @@
     "axios": "^0.18.0",
     "dat.gui": "^0.7.5",
     "glslify-loader": "^2.0.0",
+    "gsap": "^2.1.2",
     "raw-loader": "^1.0.0",
     "three": "^0.100.0",
     "ua-parser-js": "0.7.19",
