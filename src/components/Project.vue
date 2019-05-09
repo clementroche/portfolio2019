@@ -22,11 +22,11 @@ export default {
 
 <style lang="scss" scoped>
 .project{
-    min-width: 70vh;
-	height: 70vh;
-	max-height: 70vh;
+  min-width: 50vh;
+	height: 50vh;
+	max-height: 50vh;
 	display:flex;
-	margin: 0 5vh;
+	margin: 0 10vh;
     a {
         width: 100%;
         video {

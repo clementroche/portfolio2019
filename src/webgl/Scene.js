@@ -9,11 +9,12 @@ import RendererComposer from './postprocessing';
 
 class Scene {
   constructor(canvas) {
-    window.addEventListener('resize',this.onWindowResize.bind(this))
+    window.addEventListener('resize', this.onWindowResize.bind(this));
     this.canvas = canvas;
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xffffff);
     const ratio = window.innerWidth / window.innerHeight;
-    this.camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(75, ratio, 0.01, 1000);
     this.renderer = new RendererComposer({
       scene: this.scene,
       camera: this.camera,
@@ -22,8 +23,8 @@ class Scene {
     this.objLoader = new OBJLoader();
     this.orbitControl = new OrbitControls(this.camera);
     this.orbitControl.enabled = false;
-    this.orbitControl.autoRotate = true;
-    this.orbitControl.autoRotateSpeed = 1;
+    // this.orbitControl.autoRotate = true;
+    this.orbitControl.autoRotateSpeed = 0.25;
 
     this.initLight();
     this.initClock();
@@ -47,13 +48,16 @@ class Scene {
     // }));
     // this.scene.add(this.cube);
     this.initParticles();
-    this.camera.position.z = 1;
-    this.camera.position.y = 0.1;
+    // this.camera.position.z = 1;
+    // this.camera.position.y = 0.1;
+    // this.camera.position.set(0, 0, 0.6);
+    this.camera.position.set(0,0.1,0.5)
     this.loop();
   }
 
   initParticles() {
     this.particles = new Particles();
+    this.particles.rotation.y = THREE.Math.degToRad(45);
     this.scene.add(this.particles);
   }
 
@@ -66,17 +70,17 @@ class Scene {
   }
 
   onWindowResize() {
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
 
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }
 
 class Particles extends THREE.Object3D {
   constructor() {
     super();
-    this.side = 256;
+    this.side = 400;
     this.init();
   }
 
@@ -98,21 +102,20 @@ class Particles extends THREE.Object3D {
       },
       pointSize: {
         type: 'f',
-        value: 2,
+        value: 1,
       },
       big: {
         type: 'v3',
-        value: new THREE.Vector3(207, 221, 212).multiplyScalar(1 / 0xff),
+        value: new THREE.Vector3(0, 0, 255).multiplyScalar(1 / 0xff),
       },
       small: {
         type: 'v3',
-        value: new THREE.Vector3(213, 239, 229).multiplyScalar(1 / 0xff),
+        value: new THREE.Vector3(0, 0, 255).multiplyScalar(1 / 0xff),
       },
     };
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       transparent: true,
-      blending: THREE.AdditiveBlending,
       vertexShader: `
         //Simplex 3D Noise
         //by Ian McEwan, Ashima Arts
@@ -201,7 +204,10 @@ class Particles extends THREE.Object3D {
           vec3 newPosition = vec3(origin.x,noise*0.1,origin.z);
 
           //Point size - snoise
-          gl_PointSize = size = max( 1., ( step( 1. - ( 1. / 512. ), position.x ) ) * pointSize );
+          gl_PointSize = size = pointSize;
+          if( position.y > 0.46 ) {
+            gl_PointSize = size = 2.1;
+          }
           gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
         }
       `,
@@ -212,11 +218,11 @@ class Particles extends THREE.Object3D {
         varying float noise;
 
         void main() {
-          gl_FragColor = vec4( small, .075 );
+          gl_FragColor = vec4( small, 1. );
 
-          if( size > 1. )
+          if( size > 2.0 )
           {
-             gl_FragColor = vec4( big * vec3( 1. - length( gl_PointCoord.xy-vec2(.5) ) ) * 1.5, .95 );
+             gl_FragColor = vec4( big * vec3( 1. - length( gl_PointCoord.xy-vec2(.5) ) ) * 1.5, 1. );
           }
         }
       `,

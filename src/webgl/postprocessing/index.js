@@ -12,15 +12,17 @@ class RendererComposer {
     this.camera = camera;
     this.scene = scene;
 
-    this.baseRenderer = new THREE.WebGLRenderer({ canvas });
-    this.baseRenderer.setPixelRatio(1.2);
+    this.baseRenderer = new THREE.WebGLRenderer({ canvas,antialias:true });
+    // this.baseRenderer.setPixelRatio(1.2);
+    this.baseRenderer.setPixelRatio(window.devicePixelRatio);
     this.baseRenderer.setSize(window.innerWidth, window.innerHeight);
 
     this.composer = new EffectComposer(this.baseRenderer);
 
-    // this.outlinePass = new OutlinePass(undefined, this.scene, this.camera, this.scene.children)
+    const bloomPass = new BloomPass();
     const renderScene = new RenderPass(scene, camera);
     this.composer.addPass(renderScene);
+    this.composer.addPass(bloomPass);
     renderScene.renderToScreen = true;
 
   }
